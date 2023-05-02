@@ -8,7 +8,6 @@ describe("Box", function() {
   beforeEach(async function(){
     //Box contract
     Box = await ethers.getContractFactory("Box");
-
     BoxContract = await upgrades.deployProxy(Box, [42], { initializer: 'store' });
     await BoxContract.deployed();
 
@@ -25,9 +24,15 @@ describe("Box", function() {
 
   });
 
-  it.only('BoxV2 Contract Upgrade', async () => {
-    await BoxV2Contract.increment()
-    const value = await BoxV2Contract.retrieve()
+  it('BoxV2 Contract Upgrade', async () => {
+    let value = await BoxV2Contract.retrieve()
+
+    expect(value.toString()).to.equal('42');
+
+    await BoxV2Contract.increment() // increment the value to 43
+
+    value = await BoxV2Contract.retrieve()
+
     expect(value.toString()).to.equal('43');
   })
 });
