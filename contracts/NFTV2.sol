@@ -8,16 +8,21 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 contract NFTV2 is Initializable, ERC721Upgradeable, ERC721URIStorageUpgradeable, OwnableUpgradeable, UUPSUpgradeable {
+
+    address public admin;
+
     /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor() {
+    constructor(address _admin) {
         _disableInitializers();
+        admin = _admin;
     }
 
-    function initialize() initializer public {
+    function initialize(address _admin) initializer public {
         __ERC721_init("NFTV2", "NFT2");
         __ERC721URIStorage_init();
         __Ownable_init();
         __UUPSUpgradeable_init();
+        admin = _admin;
     }
 
     function safeMint(address to, uint256 tokenId, string memory uri)

@@ -1,4 +1,7 @@
-const { ethers, upgrades } = require('hardhat');
+// import { ethers , upgrade } from 'hardhat';
+
+// const { upgrades  } = require('hardhat');
+const { ethers : any  } = require('hardhat');
 
 async function main () {
   const BoxV2 = await ethers.getContractFactory('BoxV2');

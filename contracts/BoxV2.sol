@@ -1,12 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract BoxV2 {
-    // address public _address;
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+
+
+contract BoxV2 is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     uint256 private _value;
 
     // Emitted when the stored value changes
     event ValueChanged(uint256 value);
+
+    constructor() {
+        _disableInitializers();
+    }
 
     // Stores a new value in the contract
     function store(uint256 value) public {
@@ -25,7 +33,15 @@ contract BoxV2 {
         emit ValueChanged(_value);
     }
 
-    // function setAddress(address newAddress) public{
-    //     _address = newAddress;
-    // }
+
+     function initialize() initializer public {
+        __Ownable_init();
+        __UUPSUpgradeable_init();
+    }
+
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        onlyOwner
+        override
+    {}
 }
