@@ -9,6 +9,14 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 contract BoxV2 is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     uint256 private _value;
 
+    // address private immutable __self = address(this);
+
+    // modifier onlyProxy() {
+    //     require(address(this) != __self, "Function must be called through delegatecall");
+    //     require(_getImplementation() == __self, "Function must be called through active proxy");
+    //     _;
+    // }
+
     // Emitted when the stored value changes
     event ValueChanged(uint256 value);
 
@@ -16,27 +24,30 @@ contract BoxV2 is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         _disableInitializers();
     }
 
-    // Stores a new value in the contract
-    function store(uint256 value) public {
+    function store(uint256 value) public{
         _value = value;
         emit ValueChanged(value);
     }
 
-    // Reads the last stored value
     function retrieve() public view returns (uint256) {
         return _value;
     }
 
-    // Increments the stored value by 1
-    function increment() public {
+    function increment() public onlyProxy  {
         _value = _value + 1;
         emit ValueChanged(_value);
     }
 
+    function decrement() public notDelegated {
+        _value = _value - 1;
+        emit ValueChanged(_value);
+    }
 
-     function initialize() initializer public {
+
+    function initialize(uint256 value) initializer public {
         __Ownable_init();
         __UUPSUpgradeable_init();
+        _value = value;
     }
 
     function _authorizeUpgrade(address newImplementation)
